@@ -1,13 +1,14 @@
 import json 
 import re
 from collections import Counter
+
+################################ Origional json data import for comparision.
 path = './Entity Recognition in Resumes.json' 
-
-
 json_data=[]
 for line in open(path, 'r', encoding='utf-8'):
     json_data.append(json.loads(line))
-
+    
+################################ Function for cleaning the text of special characters.
 def getText():
 
     json_data=[]
@@ -28,59 +29,49 @@ def getText():
         
    
     return txt
-
+    
+################################ Data preprocessing, which acquire Normalize content"StrContent" and Normalize annotation"StrAnnotation".
+##########Acquire cleaned resumes data in "list".
 Resumes=getText()
+
+########## Convert cleaned resumes data from "list" to "dict"
 CleanResumes={}
 for i in range(len(Resumes)):
     CleanResumes[i]=json.loads(Resumes[i])
     
-
+########## Acquire annotition part from cleaned resumes data in "dict"
 Annotation={}
 for i in range(len(CleanResumes)):
     Annotation[i]=CleanResumes[i]["annotation"]
 
-
+########## Acquire content in "str" according to 220 resumes
 StrContent={}
 for i in range(len(CleanResumes)):
     StrContent[i]=CleanResumes[i].get('content')
 
-
+########## Separate the annotations into individual skills and acquire annotations in "str" according to 220 resumes
 StrAnnotation={}
 for i in range(len(Annotation)):
     StrAnnotation[i]=json.dumps(Annotation[i],indent=2)
 
-
-
-################################ Output word result sorting
-
-list1 = A.split() 
-dir1 = Counter(list1)
-Q=dir1.get('data','0')
-
-items = list(dir1.items())
-items.sort(key=lambda x: x[1], reverse=True)
-
-
-for i in range(30):
-    word, count = items[i]
-    print("{0:<30}{1:>5}".format(word, count))   
-
-############################### Output the frequency ranking of a certain word in 220 resumes
-
+############################### Set some words as keywords, according to the keywords to rank these resumes. 
+############################### Output the frequency ranking of a certain word in 220 resumes.
+########## Acquire "items", which is a list includes keywords and their total frequent in 220 resumes.(The total frequent is a sum of each keyword's frequent.) 
 Num={}
-
-for i in range(len(StrContent)):
-  ########## For Tester finding
+for i in range(len(StrContent)): #Select which goal is your aim.
+  #@@@@@@@@@@ For Tester finding, select if you want.
   #Num[i] = Counter(StrContent[i].split()).get('test',0) + Counter(StrContent[i].split()).get('testing',0) + Counter(StrContent[i].split()).get('Tester',0)
-  ########## For Developer finding
+  
+  #@@@@@@@@@@ For Developer finding, select if you want.
   #Num[i] = Counter(StrContent[i].split()).get('developer',0) + Counter(StrContent[i].split()).get('develop',0) + Counter(StrContent[i].split()).get('developing',0) + Counter(StrContent[i].split()).get('devop',0) + Counter(StrContent[i].split()).get('design',0)
-  ########## For Manager finding
+  
+  #@@@@@@@@@@ For Manager finding, select if you want.
   Num[i] = Counter(StrContent[i].split()).get('manage',0) + Counter(StrContent[i].split()).get('manager',0) + Counter(StrContent[i].split()).get('management',0) + Counter(StrContent[i].split()).get('managing',0) + Counter(StrContent[i].split()).get('lead',0)
-
+  
 items = list(Num.items())
-
 items.sort(key=lambda x:x[1], reverse=True)         
- 
+
+########## Select top 30 resumes to rank.
 for i in range(30):
     word, count = items[i]
     print("{0:<30}{1:>5}".format(word, count),file=open("Resumerank.txt", "a"))  
