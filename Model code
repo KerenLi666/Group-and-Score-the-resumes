@@ -1,0 +1,86 @@
+import json 
+import re
+from collections import Counter
+path = './Entity Recognition in Resumes.json' 
+
+
+json_data=[]
+for line in open(path, 'r', encoding='utf-8'):
+    json_data.append(json.loads(line))
+
+def getText():
+
+    json_data=[]
+    
+    for line in open(path, 'r', encoding='utf-8'):
+       
+        json_data.append(json.loads(line))
+        
+    txt = open(path, 'r',encoding='utf-8')
+    txt=txt.readlines()
+    
+    for i in range(len(txt)):
+        
+     
+     for ch in '!#$%&*➢〓…☑●•<.-=()>?@❖^_~':
+        
+        txt[i] = txt[i].replace(ch, ' ').replace("\\n","").lower()
+        
+   
+    return txt
+
+Resumes=getText()
+CleanResumes={}
+for i in range(len(Resumes)):
+    CleanResumes[i]=json.loads(Resumes[i])
+    
+
+Annotation={}
+for i in range(len(CleanResumes)):
+    Annotation[i]=CleanResumes[i]["annotation"]
+
+
+StrContent={}
+for i in range(len(CleanResumes)):
+    StrContent[i]=CleanResumes[i].get('content')
+
+
+StrAnnotation={}
+for i in range(len(Annotation)):
+    StrAnnotation[i]=json.dumps(Annotation[i],indent=2)
+
+
+
+################################ Output word result sorting
+
+list1 = A.split() 
+dir1 = Counter(list1)
+Q=dir1.get('data','0')
+
+items = list(dir1.items())
+items.sort(key=lambda x: x[1], reverse=True)
+
+
+for i in range(30):
+    word, count = items[i]
+    print("{0:<30}{1:>5}".format(word, count))   
+
+############################### Output the frequency ranking of a certain word in 220 resumes
+
+Num={}
+
+for i in range(len(StrContent)):
+  ########## For Tester finding
+  #Num[i] = Counter(StrContent[i].split()).get('test',0) + Counter(StrContent[i].split()).get('testing',0) + Counter(StrContent[i].split()).get('Tester',0)
+  ########## For Developer finding
+  #Num[i] = Counter(StrContent[i].split()).get('developer',0) + Counter(StrContent[i].split()).get('develop',0) + Counter(StrContent[i].split()).get('developing',0) + Counter(StrContent[i].split()).get('devop',0) + Counter(StrContent[i].split()).get('design',0)
+  ########## For Manager finding
+  Num[i] = Counter(StrContent[i].split()).get('manage',0) + Counter(StrContent[i].split()).get('manager',0) + Counter(StrContent[i].split()).get('management',0) + Counter(StrContent[i].split()).get('managing',0) + Counter(StrContent[i].split()).get('lead',0)
+
+items = list(Num.items())
+
+items.sort(key=lambda x:x[1], reverse=True)         
+ 
+for i in range(30):
+    word, count = items[i]
+    print("{0:<30}{1:>5}".format(word, count),file=open("Resumerank.txt", "a"))  
