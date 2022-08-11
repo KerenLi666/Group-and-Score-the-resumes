@@ -1,5 +1,6 @@
 # Group-and-Score-the-resumes
 A created algorithm to group and score resumes for a company
+This model is based on keywords search.
 The run/build for this code has been detailed illustrated in code by notes "##".
 It seperates some parts in code, each part has its function and notes "##", it should be easy to read the code.
 Have three output files, "Management resume rank","Testing resume rank" and "Development resume rank".
